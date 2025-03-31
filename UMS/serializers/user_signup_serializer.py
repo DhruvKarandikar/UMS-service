@@ -99,13 +99,6 @@ class UserSignUpRequestSerializer(HeadSignUpSerializer):
 
         return value
 
-class DataSerializer(HeadSignUpSerializer):
-
-    referred_by = None
-
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name","last_name","email_id","mobile_no","gender",)
 
 
 class UserSignUpResponseSerializer(serializers.Serializer):
@@ -128,3 +121,28 @@ class UserReferrerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserReferrer
         fields = ("id", "referrer_id", "referee_id", "registration_date",)
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        referrer = UserModel.objects.filter(id=instance.referrer_id).first()
+        referee = UserModel.objects.filter(id=instance.referee_id).first()
+        
+        data["registration_date"] = instance.registration_date.date()
+        data["referrer_name"] = f"{referrer.first_name} {referrer.last_name}" if referrer else None
+        data["referrer_email"] = f"{referrer.email_id}"
+        data["referee_name"] = f"{referee.first_name} {referee.last_name}" if referee else None
+        data["referee_email"] = f"{referee.email_id}"
+
+        return data
+
+
+class DataSerializer(HeadSignUpSerializer):
+
+    referred_by = None
+    user_referrer = UserReferrerSerializer(many=True, source='referred_users')
+
+    class Meta:
+        model = UserModel
+        fields = ("id", "first_name","last_name","email_id","mobile_no","gender","user_referrer",)
+
