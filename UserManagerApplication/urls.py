@@ -35,8 +35,8 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('v1/VPM/admin/', admin.site.urls),
+    path('v1/UMA/admin/', admin.site.urls),
     path('v1/UMA/ums/', include('UMS.urls')),
-    path('v1/VPM/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('v1/VPM/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('v1/UMA/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('v1/UMA/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
